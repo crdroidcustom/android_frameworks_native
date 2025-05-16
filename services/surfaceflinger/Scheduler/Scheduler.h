@@ -371,7 +371,6 @@ private:
     void kernelIdleTimerCallback(TimerState) EXCLUDES(mDisplayLock);
     void idleTimerCallback(TimerState);
     void touchTimerCallback(TimerState);
-    void heuristicIdleTimerCallback(TimerState);
     void displayPowerTimerCallback(TimerState);
 
     // VsyncSchedule delegate.
@@ -496,9 +495,6 @@ private:
     ftl::Optional<OneShotTimer> mTouchTimer;
     // Timer used to monitor display power mode.
     ftl::Optional<OneShotTimer> mDisplayPowerTimer;
-    // Timer used to enter idle refresh rate in heuristic layers.
-    std::optional<OneShotTimer> mHeuristicIdleTimer;
-    static constexpr std::chrono::milliseconds HEURISTIC_TIMEOUT = 3000ms;
 
     // Injected delay prior to compositing, for simulating jank.
     float mPacesetterFrameDurationFractionToSkip GUARDED_BY(kMainThreadContext) = 0.f;
@@ -584,7 +580,6 @@ private:
         // Policy for choosing the display mode.
         LayerHistory::Summary contentRequirements;
         TimerState idleTimer = TimerState::Reset;
-        TimerState heuristicIdleTimer = TimerState::Reset;
         TouchState touch = TouchState::Inactive;
         TimerState displayPowerTimer = TimerState::Expired;
         hal::PowerMode displayPowerMode = hal::PowerMode::ON;
